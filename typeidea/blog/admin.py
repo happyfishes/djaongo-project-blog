@@ -19,6 +19,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
     post_count.short_description = '文章数量'
 
+
 class CategotyOwnerFilter(admin.SimpleListFilter):
     """ 自定义过滤器只展示当前用户分裂 """
     title = '分类过滤器'
@@ -60,7 +61,10 @@ class PostAdmin(admin.ModelAdmin):
 
     # 编辑页面
     save_on_top = True
+    # 指定哪些字段不显示
+    exclude = ['owner']
 
+    """
     fields = (
         ('category', 'title'),
         'desc',
@@ -68,6 +72,28 @@ class PostAdmin(admin.ModelAdmin):
         'content',
         'tag',
     )
+    """
+    fieldsets = (
+        ('基础配置', {
+            'description': '基础配置描述',
+            'fields': (
+                ('title', 'category'),
+                'status',
+            ),
+        }),
+        ('内容', {
+            'fields': (
+                'desc',
+                'content',
+            ),
+        }),
+        ('额外信息', {
+            'classes': ('wide',),
+            'fields': ('tag',),
+        })
+    )
+    # filter_horizontal = ('tag', )
+    filter_vertical = ('tag',)
 
     def operator(self, obj):
         return format_html(
