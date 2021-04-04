@@ -3,10 +3,18 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from .adminform import PostAdminForm
+
 from .models import Post, Category, Tag
+from typeidea.custom_site import custom_site
 
 
-@admin.register(Category)
+class PostInline(admin.TabularInline):
+    fields = ('title', 'desc')
+    extra = 1
+    model = Post
+
+
+@admin.register(Category, site=custom_site)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'status', 'is_nav', 'created_time', 'post_count')
     fields = ('name', 'status', 'is_nav')
@@ -36,7 +44,7 @@ class CategotyOwnerFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(Tag)
+@admin.register(Tag, site=custom_site)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'status', 'created_time')
     fields = ('name', 'status')
@@ -46,7 +54,7 @@ class TagAdmin(admin.ModelAdmin):
         return super(TagAdmin, self).save_model(request, obj, form, change)
 
 
-@admin.register(Post)
+@admin.register(Post, site=custom_site)
 class PostAdmin(admin.ModelAdmin):
     form = PostAdminForm
     list_display = [
@@ -56,7 +64,6 @@ class PostAdmin(admin.ModelAdmin):
     list_display_links = []
     list_filter = [CategotyOwnerFilter, ]
     search_fields = ['title', 'category__name']
-    # save_on_top = True
 
     actions_on_top = True
     actions_on_bottom = True
@@ -99,7 +106,7 @@ class PostAdmin(admin.ModelAdmin):
 
     def operator(self, obj):
         return format_html(
-            '<a href="{}">编辑</a>', reverse('admin:blog_post_change', args=(obj.id,))
+            '<a href="{}">编辑</a>', reverse('cus_admin:blog_post_change', args=(obj.id,))
         )
 
     operator.short_description = '操作'
