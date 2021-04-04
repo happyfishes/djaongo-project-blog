@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 
+from .adminform import PostAdminForm
 from .models import Post, Category, Tag
 
 
@@ -47,6 +48,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
+    form = PostAdminForm
     list_display = [
         'title', 'category', 'status',
         'created_time', 'owner', 'operator'
@@ -109,3 +111,9 @@ class PostAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super(PostAdmin, self).get_queryset(request)
         return qs.filter(owner=request.user)
+
+    class Media:
+        css = {
+            'all': ("https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css",),
+        }
+        js = ('https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.js',)
