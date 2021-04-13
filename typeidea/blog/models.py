@@ -23,6 +23,22 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    @staticmethod
+    def get_navs():
+        categories = Category.objects.filter(status=Category.STATUS_NORMAL)
+        nav_categories = []
+        normal_categories = []
+        for cate in categories:
+            if cate.is_nav:
+                nav_categories.append(cate)
+            else:
+                normal_categories.append(cate)
+
+        return {
+            'navs': nav_categories,
+            'categories': normal_categories,
+        }
+
 
 class Tag(models.Model):
     STATUS_NORMAL = 1
@@ -95,6 +111,6 @@ class Post(models.Model):
         return post_list, category
 
     @staticmethod
-    def latest_posts(cls):
-        query_set = cls.objects.filter(status=cls.STATUS_NORMAL)
+    def latest_posts():
+        query_set = Post.objects.filter(status=Post.STATUS_NORMAL)
         return query_set

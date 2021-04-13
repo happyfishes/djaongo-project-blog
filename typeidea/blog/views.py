@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Post
+from .models import Post, Category
 
 
 def post_list(request, category_id=None, tag_id=None):
@@ -18,6 +18,7 @@ def post_list(request, category_id=None, tag_id=None):
         'post_list': post_list,
 
     }
+    context.update(Category.get_navs())
     return render(request, 'blog/list.html', context=context)
 
 
@@ -26,4 +27,8 @@ def post_detail(request, post_id=None):
         Post.objects.get(id=post_id)
     except Post.DoesNotExist:
         post = None
-    return render(request, 'blog/detail.html', context={'post': 'post'})
+    context = {
+        'post': 'post'
+    }
+    context.update(Category.get_navs())
+    return render(request, 'blog/detail.html', context=context)
