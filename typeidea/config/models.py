@@ -47,3 +47,7 @@ class SideBar(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = '侧边栏'
+
+    @staticmethod
+    def get_sidebars():
+        return SideBar.objects.filter(status=SideBar.STATUS_SHOW)
