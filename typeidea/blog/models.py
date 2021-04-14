@@ -79,6 +79,9 @@ class Post(models.Model):
     owner = models.ForeignKey(User, verbose_name='作者', on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
 
+    pv = models.PositiveIntegerField(default=1)
+    uv = models.PositiveIntegerField(default=1)
+
     class Meta:
         verbose_name = verbose_name_plural = '文章'
         ordering = ['-id']  # 根据id进行降序排列
@@ -114,3 +117,7 @@ class Post(models.Model):
     def latest_posts():
         query_set = Post.objects.filter(status=Post.STATUS_NORMAL)
         return query_set
+
+    @staticmethod
+    def hot_posts(self):
+        return self.objects.filter(status=self.STATUS_NORMAL).order_by('-pv')
